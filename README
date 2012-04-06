@@ -1,0 +1,24 @@
+Gearman status nginx module
+
+To play with this module compile nginx with this ./configure option:
+    
+    --add-module=path/to/this/directory
+
+Then activate it in nginx.conf. For instance for the URL /gearman-status:
+
+  location /gearman-status {
+    gearman_status on;
+  }
+
+Then after starting nginx you immediately can request the URL /gearman-status
+and watch for the output of this module. This can be achieved for instance via:
+
+  $ lynx -mime_header http://localhost/gearman-status
+
+By default this module tries to connect to localhost:4730 in order to retrieve
+Various information. There are also two directives which let you set the
+hostname of the server running gearmand, and the gearmand port.
+
+Directives Are "gearman_status_hostname", and "gearman_status_port".
+
+Apache version: https://github.com/amir/mod_gearman_status
