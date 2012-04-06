@@ -84,11 +84,11 @@ ngx_module_t  ngx_http_gearman_status_module = {
 
 int readline(int socket_fd, char *buffer, size_t len)
 {
-    char *bufx = buffer;
+    char        c;
+    char        *bufx = buffer;
     static char *bp;
-    static int cnt = 0;
+    static int  cnt = 0;
     static char b[1500];
-    char c;
 
     while (--len > 0) {
         if (--cnt <= 0) {
@@ -141,8 +141,8 @@ static inline off_t get_content_length(ngx_chain_t *c)
 
 static ngx_chain_t *get_header(ngx_http_request_t *r)
 {
+    ngx_buf_t   *b;
     ngx_chain_t *c;
-    ngx_buf_t *b;
 
     b = ngx_create_temp_buf(r->pool, sizeof(HTML_HEADER));
     if (b == NULL)
@@ -162,8 +162,8 @@ static ngx_chain_t *
 get_connection_error(ngx_http_request_t *r, const char *hostname, int port)
 {
     ngx_chain_t *c;
-    ngx_buf_t *b;
-    size_t size;
+    ngx_buf_t   *b;
+    size_t      size;
 
     size = sizeof(CONNECTION_ERROR) + NGX_INT32_LEN + strlen(hostname);
     b = ngx_create_temp_buf(r->pool, size);
@@ -182,8 +182,8 @@ get_connection_error(ngx_http_request_t *r, const char *hostname, int port)
 
 static ngx_chain_t *get_footer(ngx_http_request_t *r)
 {
+    ngx_buf_t   *b;
     ngx_chain_t *c;
-    ngx_buf_t *b;
 
     b = ngx_create_temp_buf(r->pool, sizeof(HTML_FOOTER));
     if (b == NULL)
@@ -201,15 +201,15 @@ static ngx_chain_t *get_footer(ngx_http_request_t *r)
 
 static ngx_chain_t *get_info(ngx_http_request_t *r, int socket_fd, int task)
 {
-    char line[128];
-    char buffer[50];
-    int i, j = 0;
-    char *delim;
-    char *token;
+    char        buffer[50];
+    char        *delim;
+    char        line[128];
+    char        *token;
+    int         i, j = 0;
+    ngx_buf_t   *b;
     ngx_chain_t *c;
-    ngx_buf_t *b;
-    size_t size;
-    size_t size_per_row;
+    size_t      size;
+    size_t      size_per_row;
 
     if (task == TASK_WORKERS) {
         size = sizeof(WORKERS_TABLE_HEADER);
@@ -283,11 +283,11 @@ static ngx_chain_t *get_info(ngx_http_request_t *r, int socket_fd, int task)
 static ngx_chain_t *
 get_version(ngx_http_request_t *r, int socket_fd, const char *hostname)
 {
-    char line[10];
-    char buffer[50];
+    char        buffer[50];
+    char        line[10];
+    ngx_buf_t   *b;
     ngx_chain_t *c;
-    ngx_buf_t *b;
-    size_t size;
+    size_t      size;
 
     c = ngx_pcalloc(r->pool, sizeof(ngx_chain_t));
     sprintf(buffer, "version\n");
@@ -315,13 +315,14 @@ get_version(ngx_http_request_t *r, int socket_fd, const char *hostname)
 
 static ngx_int_t ngx_http_gearman_status_handler(ngx_http_request_t *r)
 {
-    int         status = 1;
-    int         socket_fd;
-    ngx_int_t   rc;
-    struct      sockaddr_in name;
-    struct      hostent* hostinfo;
-    ngx_chain_t *fc, *mc, *lc;
-    ngx_http_gearman_status_conf_t *gscf;
+    int                             status = 1;
+    int                             socket_fd;
+    ngx_chain_t                     *fc, *mc, *lc;
+    ngx_http_gearman_status_conf_t  *gscf;
+    ngx_int_t                       rc;
+    struct hostent*                 hostinfo;
+    struct sockaddr_in              name;
+
     gscf = ngx_http_get_module_loc_conf(r, ngx_http_gearman_status_module);
 
     if (r->method != NGX_HTTP_GET)
@@ -402,6 +403,7 @@ static char *
 ngx_http_set_gearman_status(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
 {
     ngx_http_core_loc_conf_t  *clcf;
+
     clcf = ngx_http_conf_get_module_loc_conf(cf, ngx_http_core_module);
     clcf->handler = ngx_http_gearman_status_handler;
 
